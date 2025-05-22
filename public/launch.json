@@ -1,0 +1,27 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "type": "pwa-node",
+        "request": "launch",
+        "name": "Launch Vite React App",
+        "program": "${workspaceFolder}/${input:entryFile}",
+        "cwd": "${workspaceFolder}",
+        "runtimeExecutable": "npm",
+        "runtimeArgs": ["run", "dev"],
+        "envFile": "${workspaceFolder}/.env",
+        "console": "integratedTerminal"
+      }
+    ],
+    "inputs": [
+      {
+        "type": "pickString",
+        "id": "entryFile",
+        "description": "Select the entry file for your application",
+        "options": [
+          "src/main.tsx",
+          "src/App.tsx"
+        ]
+      }
+    ]
+  }

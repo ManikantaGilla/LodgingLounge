@@ -1,40 +1,15 @@
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import HotelCard from "./HotelCard";
 import { HOTELS_DATA } from "@/data/hotels";
-import { toast } from "sonner";
+import { useFavorites } from "@/context/FavoritesContext";
 
 const FeaturedHotels = () => {
   // Get 4 featured hotels
   const featuredHotels = HOTELS_DATA.slice(0, 4);
-  const [favorites, setFavorites] = useState<string[]>([]);
-
-  // Load favorites from localStorage on component mount
-  useEffect(() => {
-    const storedFavorites = localStorage.getItem('favorites');
-    if (storedFavorites) {
-      setFavorites(JSON.parse(storedFavorites));
-    }
-  }, []);
-
-  // Save favorites to localStorage whenever they change
-  useEffect(() => {
-    localStorage.setItem('favorites', JSON.stringify(favorites));
-  }, [favorites]);
-
-  const handleToggleFavorite = (hotelId: string) => {
-    setFavorites(prevFavorites => {
-      if (prevFavorites.includes(hotelId)) {
-        toast('Removed from favorites');
-        return prevFavorites.filter(id => id !== hotelId);
-      } else {
-        toast('Added to favorites');
-        return [...prevFavorites, hotelId];
-      }
-    });
-  };
+  const { toggleFavorite, isFavorite } = useFavorites();
 
   return (
     <section className="py-12">
@@ -57,8 +32,8 @@ const FeaturedHotels = () => {
               reviews={hotel.reviews}
               price={hotel.price}
               image={hotel.images[0]}
-              isFavorite={favorites.includes(hotel.id)}
-              onToggleFavorite={handleToggleFavorite}
+              isFavorite={isFavorite(hotel.id)}
+              onToggleFavorite={toggleFavorite}
             />
           ))}
         </div>

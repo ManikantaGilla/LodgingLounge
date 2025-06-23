@@ -2,7 +2,7 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { toast } from "sonner";
 import { useAuth } from './AuthContext';
-import { saveToFavorites, removeFromFavorites, getFavorites } from '@/services/mongoService';
+import { supabase } from "@/integrations/supabase/client";
 
 type FavoritesContextType = {
   favorites: string[];
@@ -18,15 +18,23 @@ export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { user } = useAuth();
 
-  // Load favorites from localStorage or MongoDB based on authentication state
+  // Load favorites from Supabase or localStorage
   useEffect(() => {
     const loadFavorites = async () => {
       setIsLoading(true);
       try {
         if (user) {
-          // User is logged in, load favorites from MongoDB
-          const userFavorites = await getFavorites(user.id);
-          setFavorites(userFavorites);
+          // User is logged in, load favorites from Supabase
+          const { data, error } = await supabase
+            .from('favorites')
+            .select('hotel_id')
+            .eq('user_id', user.id);
+
+          if (error) {
+            console.error('Error loading favorites:', error);
+          } else {
+            setFavorites(data.map(item => item.hotel_id));
+          }
         } else {
           // User is not logged in, load favorites from localStorage
           const storedFavorites = localStorage.getItem('favorites');
@@ -56,35 +64,43 @@ export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       if (favorites.includes(hotelId)) {
         // Remove from favorites
         if (user) {
-          // User is logged in, remove from MongoDB
-          const success = await removeFromFavorites(user.id, hotelId);
-          if (success) {
-            setFavorites(prev => prev.filter(id => id !== hotelId));
-            toast('Removed from favorites');
+          // User is logged in, remove from Supabase
+          const { error } = await supabase
+            .from('favorites')
+            .delete()
+            .eq('user_id', user.id)
+            .eq('hotel_id', hotelId);
+
+          if (error) {
+            console.error('Error removing favorite:', error);
+            toast.error('Failed to remove from favorites');
+            return;
           }
-        } else {
-          // User is not logged in, only update local state
-          setFavorites(prev => prev.filter(id => id !== hotelId));
-          toast('Removed from favorites');
         }
+        
+        setFavorites(prev => prev.filter(id => id !== hotelId));
+        toast('Removed from favorites');
       } else {
         // Add to favorites
         if (user) {
-          // User is logged in, save to MongoDB
-          const success = await saveToFavorites(user.id, hotelId);
-          if (success) {
-            setFavorites(prev => [...prev, hotelId]);
-            toast('Added to favorites');
+          // User is logged in, save to Supabase
+          const { error } = await supabase
+            .from('favorites')
+            .insert({ user_id: user.id, hotel_id: hotelId });
+
+          if (error) {
+            console.error('Error adding favorite:', error);
+            toast.error('Failed to add to favorites');
+            return;
           }
-        } else {
-          // User is not logged in, only update local state
-          setFavorites(prev => [...prev, hotelId]);
-          toast('Added to favorites');
         }
+        
+        setFavorites(prev => [...prev, hotelId]);
+        toast('Added to favorites');
       }
     } catch (error) {
       console.error('Error toggling favorite:', error);
-      toast('An error occurred. Please try again.');
+      toast.error('An error occurred. Please try again.');
     }
   };
 

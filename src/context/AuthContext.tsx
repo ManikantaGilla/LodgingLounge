@@ -12,6 +12,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<boolean>;
   register: (name: string, email: string, password: string) => Promise<boolean>;
   logout: () => void;
+  getUserName: () => string;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -40,6 +41,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     return () => subscription.unsubscribe();
   }, []);
+
+  const getUserName = () => {
+    if (!user) return "User";
+    return user.user_metadata?.full_name || user.email?.split('@')[0] || "User";
+  };
 
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
@@ -122,7 +128,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       isLoading, 
       login, 
       register, 
-      logout 
+      logout,
+      getUserName
     }}>
       {children}
     </AuthContext.Provider>

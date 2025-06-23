@@ -17,7 +17,7 @@ import {
 const Navbar = () => {
   const isMobile = useIsMobile();
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
-  const { user, isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout, getUserName } = useAuth();
 
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
@@ -61,7 +61,7 @@ const Navbar = () => {
                       <>
                         <div className="p-2 flex items-center gap-2">
                           <User className="h-5 w-5" />
-                          <span>{user?.name || "User"}</span>
+                          <span>{getUserName()}</span>
                         </div>
                         <Button 
                           variant="outline" 
@@ -116,7 +116,7 @@ const Navbar = () => {
                   <DropdownMenuTrigger asChild>
                     <Button variant="outline" className="flex items-center gap-2">
                       <User className="h-4 w-4" />
-                      {user?.name || "User"}
+                      {getUserName()}
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>

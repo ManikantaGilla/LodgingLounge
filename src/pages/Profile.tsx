@@ -14,11 +14,11 @@ import { User, Mail, MapPin, Phone, Calendar } from "lucide-react";
 import { format } from "date-fns";
 
 const ProfilePage = () => {
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, logout, getUserName } = useAuth();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    fullName: user?.name || "",
+    fullName: getUserName(),
     email: user?.email || "",
     phone: "",  // User type doesn't have phone property
     address: "", // User type doesn't have address property
@@ -75,11 +75,11 @@ const ProfilePage = () => {
                   <CardContent className="flex flex-col items-center space-y-4">
                     <Avatar className="h-24 w-24">
                       <div className="flex h-full w-full items-center justify-center rounded-full bg-primary text-2xl text-white">
-                        {user?.name ? user.name.charAt(0).toUpperCase() : "U"}
+                        {getUserName().charAt(0).toUpperCase()}
                       </div>
                     </Avatar>
                     <div className="text-center">
-                      <h3 className="text-xl font-medium">{user?.name}</h3>
+                      <h3 className="text-xl font-medium">{getUserName()}</h3>
                       <p className="text-sm text-gray-500">{user?.email}</p>
                     </div>
                     <div className="flex items-center text-sm text-gray-500">

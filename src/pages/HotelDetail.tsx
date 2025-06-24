@@ -1,7 +1,8 @@
 
 import React, { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { HOTELS_DATA, Hotel } from "@/data/hotels";
+import { useQuery } from "@tanstack/react-query";
+import { fetchHotelById, fetchRoomTypesByHotelId, RoomType } from "@/services/hotelService";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import StarRating from "@/components/StarRating";
@@ -29,8 +30,6 @@ const amenityIcons: Record<string, React.ReactNode> = {
 const HotelDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [hotel, setHotel] = useState<Hotel | null>(null);
-  const [loading, setLoading] = useState(true);
   const [mainImage, setMainImage] = useState("");
   const [checkIn, setCheckIn] = useState<Date>();
   const [checkOut, setCheckOut] = useState<Date>();
@@ -39,26 +38,33 @@ const HotelDetail = () => {
   
   const { isFavorite, toggleFavorite } = useFavorites();
   
+  // Fetch hotel data
+  const { data: hotel, isLoading: hotelLoading, error: hotelError } = useQuery({
+    queryKey: ['hotel', id],
+    queryFn: () => fetchHotelById(id!),
+    enabled: !!id,
+  });
+
+  // Fetch room types
+  const { data: roomTypes = [], isLoading: roomsLoading, error: roomsError } = useQuery({
+    queryKey: ['roomTypes', id],
+    queryFn: () => fetchRoomTypesByHotelId(id!),
+    enabled: !!id,
+  });
+
   useEffect(() => {
-    // Find hotel by ID
-    const foundHotel = HOTELS_DATA.find(h => h.id === id);
-    
-    if (foundHotel) {
-      setHotel(foundHotel);
-      setMainImage(foundHotel.images[0]);
+    if (hotel && hotel.images.length > 0) {
+      setMainImage(hotel.images[0]);
     }
-    
-    setLoading(false);
-  }, [id]);
+  }, [hotel]);
 
   const handleBookNow = (roomTypeId: string) => {
-    // In a real app, this would navigate to a booking form with the selected room
     if (!hotel) return;
     
     navigate(`/booking?hotelId=${hotel.id}&roomId=${roomTypeId}${checkIn ? `&checkIn=${checkIn.toISOString()}` : ''}${checkOut ? `&checkOut=${checkOut.toISOString()}` : ''}&guests=${guests}`);
   };
 
-  if (loading) {
+  if (hotelLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-pulse">Loading...</div>
@@ -66,7 +72,7 @@ const HotelDetail = () => {
     );
   }
 
-  if (!hotel) {
+  if (hotelError || !hotel) {
     return (
       <div className="min-h-screen flex flex-col">
         <Navbar />
@@ -183,43 +189,51 @@ const HotelDetail = () => {
                 
                 <TabsContent value="rooms" className="mt-6">
                   <h2 className="text-xl font-semibold mb-4">Available Rooms</h2>
-                  <div className="space-y-6">
-                    {hotel.roomTypes.map(room => (
-                      <Card key={room.id} className="overflow-hidden">
-                        <div className="flex flex-col md:flex-row">
-                          <div className="md:w-1/3 h-[200px] md:h-auto">
-                            <img 
-                              src={room.image} 
-                              alt={room.name} 
-                              className="w-full h-full object-cover"
-                            />
-                          </div>
-                          <CardContent className="flex-grow p-6">
-                            <h3 className="text-lg font-semibold mb-2">{room.name}</h3>
-                            <p className="text-gray-700 mb-3">{room.description}</p>
-                            <div className="flex flex-wrap gap-2 mb-4">
-                              {room.features.map((feature, index) => (
-                                <div key={index} className="bg-gray-100 px-2 py-1 rounded text-sm">
-                                  {feature}
-                                </div>
-                              ))}
+                  {roomsLoading ? (
+                    <div className="space-y-4">
+                      {Array.from({ length: 3 }).map((_, index) => (
+                        <div key={index} className="animate-pulse bg-gray-200 rounded-lg h-32"></div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="space-y-6">
+                      {roomTypes.map(room => (
+                        <Card key={room.id} className="overflow-hidden">
+                          <div className="flex flex-col md:flex-row">
+                            <div className="md:w-1/3 h-[200px] md:h-auto">
+                              <img 
+                                src={room.image} 
+                                alt={room.name} 
+                                className="w-full h-full object-cover"
+                              />
                             </div>
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <div className="text-xl font-semibold text-primary">
-                                  ${room.price} <span className="text-sm text-gray-500 font-normal">/ night</span>
-                                </div>
-                                <div className="text-sm text-gray-500">Excluding taxes and fees</div>
+                            <CardContent className="flex-grow p-6">
+                              <h3 className="text-lg font-semibold mb-2">{room.name}</h3>
+                              <p className="text-gray-700 mb-3">{room.description}</p>
+                              <div className="flex flex-wrap gap-2 mb-4">
+                                {room.features.map((feature, index) => (
+                                  <div key={index} className="bg-gray-100 px-2 py-1 rounded text-sm">
+                                    {feature}
+                                  </div>
+                                ))}
                               </div>
-                              <Button onClick={() => handleBookNow(room.id)}>
-                                Book Now
-                              </Button>
-                            </div>
-                          </CardContent>
-                        </div>
-                      </Card>
-                    ))}
-                  </div>
+                              <div className="flex items-center justify-between">
+                                <div>
+                                  <div className="text-xl font-semibold text-primary">
+                                    ${room.price} <span className="text-sm text-gray-500 font-normal">/ night</span>
+                                  </div>
+                                  <div className="text-sm text-gray-500">Excluding taxes and fees</div>
+                                </div>
+                                <Button onClick={() => handleBookNow(room.id)}>
+                                  Book Now
+                                </Button>
+                              </div>
+                            </CardContent>
+                          </div>
+                        </Card>
+                      ))}
+                    </div>
+                  )}
                 </TabsContent>
                 
                 <TabsContent value="amenities" className="mt-6">

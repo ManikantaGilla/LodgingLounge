@@ -1,17 +1,43 @@
 
 import React from "react";
 import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import HotelCard from "@/components/HotelCard";
 import { Button } from "@/components/ui/button";
 import { useFavorites } from "@/context/FavoritesContext";
-import { HOTELS_DATA } from "@/data/hotels";
+import { fetchHotels } from "@/services/hotelService";
 import { Heart } from "lucide-react";
 
 const Favorites = () => {
   const { favorites, toggleFavorite } = useFavorites();
-  const favoriteHotels = HOTELS_DATA.filter(hotel => favorites.includes(hotel.id));
+  
+  const { data: allHotels = [], isLoading } = useQuery({
+    queryKey: ['hotels'],
+    queryFn: fetchHotels,
+  });
+
+  const favoriteHotels = allHotels.filter(hotel => favorites.includes(hotel.id));
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col min-h-screen">
+        <Navbar />
+        <main className="flex-grow py-12 bg-gray-50">
+          <div className="container">
+            <h1 className="text-3xl font-semibold mb-6">Your Favorite Hotels</h1>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {Array.from({ length: 4 }).map((_, index) => (
+                <div key={index} className="animate-pulse bg-gray-200 rounded-lg h-64"></div>
+              ))}
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col min-h-screen">

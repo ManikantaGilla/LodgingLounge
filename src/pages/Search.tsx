@@ -2,11 +2,12 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { format } from "date-fns";
+import { useQuery } from "@tanstack/react-query";
 import Navbar from "@/components/Navbar";
 import SearchBar from "@/components/SearchBar";
 import HotelCard from "@/components/HotelCard";
 import Footer from "@/components/Footer";
-import { HOTELS_DATA, Hotel } from "@/data/hotels";
+import { Hotel, searchHotels } from "@/services/hotelService";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -29,7 +30,6 @@ const amenitiesOptions = [
 
 const Search = () => {
   const [searchParams] = useSearchParams();
-  const [hotels, setHotels] = useState<Hotel[]>([]);
   const [filteredHotels, setFilteredHotels] = useState<Hotel[]>([]);
   const [priceRange, setPriceRange] = useState([0, 1000]);
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
@@ -47,25 +47,11 @@ const Search = () => {
   const checkOut = checkOutParam ? new Date(checkOutParam) : undefined;
   const guests = guestsParam ? parseInt(guestsParam) : 1;
 
-  useEffect(() => {
-    // Improved location-based filtering
-    const filtered = HOTELS_DATA.filter(hotel => {
-      if (location && !hotel.location.toLowerCase().includes(location.toLowerCase())) {
-        return false;
-      }
-      return true;
-    });
-    
-    setHotels(filtered);
-    setFilteredHotels(filtered);
-    
-    // Set initial price range based on data
-    if (filtered.length > 0) {
-      const minPrice = Math.min(...filtered.map(hotel => hotel.price));
-      const maxPrice = Math.max(...filtered.map(hotel => hotel.price));
-      setPriceRange([minPrice, maxPrice]);
-    }
-  }, [location, checkInParam, checkOutParam, guestsParam]); // Added dependencies to re-filter when search params change
+  // Fetch hotels with search filters
+  const { data: hotels = [], isLoading, error } = useQuery({
+    queryKey: ['searchHotels', location],
+    queryFn: () => searchHotels({ location }),
+  });
 
   useEffect(() => {
     let result = [...hotels];
@@ -100,6 +86,15 @@ const Search = () => {
     setFilteredHotels(result);
   }, [hotels, priceRange, selectedAmenities, sortBy]);
 
+  // Set initial price range based on data
+  useEffect(() => {
+    if (hotels.length > 0) {
+      const minPrice = Math.min(...hotels.map(hotel => hotel.price));
+      const maxPrice = Math.max(...hotels.map(hotel => hotel.price));
+      setPriceRange([minPrice, maxPrice]);
+    }
+  }, [hotels]);
+
   const toggleAmenity = (amenity: string) => {
     setSelectedAmenities(prev => 
       prev.includes(amenity)
@@ -107,6 +102,55 @@ const Search = () => {
         : [...prev, amenity]
     );
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col min-h-screen">
+        <Navbar />
+        <main className="flex-grow bg-gray-50">
+          <div className="bg-primary py-6">
+            <div className="container">
+              <SearchBar />
+            </div>
+          </div>
+          <div className="container py-8">
+            <div className="animate-pulse space-y-4">
+              <div className="h-8 bg-gray-200 rounded w-1/3"></div>
+              <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mt-8">
+                {Array.from({ length: 6 }).map((_, index) => (
+                  <div key={index} className="bg-gray-200 rounded-lg h-64"></div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col min-h-screen">
+        <Navbar />
+        <main className="flex-grow bg-gray-50">
+          <div className="bg-primary py-6">
+            <div className="container">
+              <SearchBar />
+            </div>
+          </div>
+          <div className="container py-8">
+            <div className="text-center py-12">
+              <h2 className="text-xl font-semibold mb-2">Unable to load hotels</h2>
+              <p className="text-gray-600">Please try again later.</p>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col min-h-screen">

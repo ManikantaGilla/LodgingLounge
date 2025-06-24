@@ -58,7 +58,7 @@ const Favorites = () => {
                   rating={hotel.rating}
                   reviews={hotel.reviews}
                   price={hotel.price}
-                  image={hotel.images[0]}
+                  image={hotel.images?.[0] || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1000&auto=format&fit=crop'}
                   isFavorite={true}
                   onToggleFavorite={toggleFavorite}
                 />

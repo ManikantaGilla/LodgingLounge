@@ -77,27 +77,89 @@ export type Database = {
       }
       hotels: {
         Row: {
+          amenities: string[]
+          coordinates: Json
           created_at: string | null
           description: string | null
           id: string
+          images: string[]
           location: string
           name: string
+          price: number
+          rating: number
+          reviews: number
+          updated_at: string | null
+        }
+        Insert: {
+          amenities?: string[]
+          coordinates?: Json
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          images?: string[]
+          location: string
+          name: string
+          price?: number
+          rating?: number
+          reviews?: number
+          updated_at?: string | null
+        }
+        Update: {
+          amenities?: string[]
+          coordinates?: Json
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          images?: string[]
+          location?: string
+          name?: string
+          price?: number
+          rating?: number
+          reviews?: number
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      room_types: {
+        Row: {
+          created_at: string | null
+          description: string
+          features: string[]
+          hotel_id: string
+          id: string
+          image: string
+          name: string
+          price: number
         }
         Insert: {
           created_at?: string | null
-          description?: string | null
+          description: string
+          features: string[]
+          hotel_id: string
           id?: string
-          location: string
+          image: string
           name: string
+          price: number
         }
         Update: {
           created_at?: string | null
-          description?: string | null
+          description?: string
+          features?: string[]
+          hotel_id?: string
           id?: string
-          location?: string
+          image?: string
           name?: string
+          price?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "room_types_hotel_id_fkey"
+            columns: ["hotel_id"]
+            isOneToOne: false
+            referencedRelation: "hotels"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       rooms: {
         Row: {

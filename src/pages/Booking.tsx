@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useSearchParams, Link, useNavigate } from "react-router-dom";
 import { format, differenceInDays } from "date-fns";
@@ -44,7 +43,7 @@ const Booking = () => {
   
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
+  const [email, setEmail] useState("");
   const [phone, setPhone] = useState("");
   
   const [cardName, setCardName] = useState("");
@@ -163,24 +162,38 @@ const Booking = () => {
       );
       
       if (result.success) {
-        toast({
-          title: "Booking Confirmed!",
-          description: "Your reservation has been successfully processed",
-        });
+        // Generate a booking reference
+        const bookingReference = result.bookingId || "BK" + Math.floor(Math.random() * 1000000).toString().padStart(6, "0");
         
         // Store booking details in sessionStorage for confirmation page
-        sessionStorage.setItem('lastBooking', JSON.stringify({
-          bookingId: result.bookingId,
+        const bookingDetails = {
+          bookingId: bookingReference,
           hotel: hotel.name,
           room: room.name,
           checkIn: checkIn.toISOString(),
           checkOut: checkOut.toISOString(),
           guests,
-          total: grandTotal
-        }));
+          total: grandTotal,
+          guestInfo: {
+            firstName,
+            lastName,
+            email,
+            phone
+          }
+        };
         
-        // Redirect to confirmation page
-        navigate("/booking-confirmation");
+        console.log('Storing booking details:', bookingDetails);
+        sessionStorage.setItem('lastBooking', JSON.stringify(bookingDetails));
+        
+        toast({
+          title: "Booking Confirmed!",
+          description: "Your reservation has been successfully processed",
+        });
+        
+        // Small delay to ensure sessionStorage is set before navigation
+        setTimeout(() => {
+          navigate("/booking-confirmation");
+        }, 100);
       } else {
         throw new Error("Booking failed");
       }

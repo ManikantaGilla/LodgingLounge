@@ -1,16 +1,39 @@
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, CalendarCheck, FileClock, ChevronRight } from "lucide-react";
+import { format } from "date-fns";
+
+interface BookingDetails {
+  bookingId: string;
+  hotel: string;
+  room: string;
+  checkIn: string;
+  checkOut: string;
+  guests: number;
+  total: number;
+}
 
 const BookingConfirmation = () => {
-  // In a real app, we would retrieve booking details from the backend
-  // For now, we'll use mock data
+  const [bookingDetails, setBookingDetails] = useState<BookingDetails | null>(null);
   
-  const bookingNumber = "BK" + Math.floor(Math.random() * 1000000).toString().padStart(6, "0");
+  useEffect(() => {
+    // Retrieve booking details from sessionStorage
+    const storedBooking = sessionStorage.getItem('lastBooking');
+    if (storedBooking) {
+      try {
+        const booking = JSON.parse(storedBooking);
+        setBookingDetails(booking);
+      } catch (error) {
+        console.error('Error parsing booking details:', error);
+      }
+    }
+  }, []);
+
+  const bookingNumber = bookingDetails?.bookingId || "BK" + Math.floor(Math.random() * 1000000).toString().padStart(6, "0");
   
   return (
     <div className="flex flex-col min-h-screen">
@@ -43,6 +66,38 @@ const BookingConfirmation = () => {
                   </Button>
                 </div>
               </div>
+
+              {bookingDetails && (
+                <div className="bg-blue-50 rounded-lg p-4 mb-6">
+                  <h3 className="font-semibold mb-3">Booking Details</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <p className="text-gray-600">Hotel</p>
+                      <p className="font-medium">{bookingDetails.hotel}</p>
+                    </div>
+                    <div>
+                      <p className="text-gray-600">Room</p>
+                      <p className="font-medium">{bookingDetails.room}</p>
+                    </div>
+                    <div>
+                      <p className="text-gray-600">Check-in</p>
+                      <p className="font-medium">{format(new Date(bookingDetails.checkIn), "MMM d, yyyy")}</p>
+                    </div>
+                    <div>
+                      <p className="text-gray-600">Check-out</p>
+                      <p className="font-medium">{format(new Date(bookingDetails.checkOut), "MMM d, yyyy")}</p>
+                    </div>
+                    <div>
+                      <p className="text-gray-600">Guests</p>
+                      <p className="font-medium">{bookingDetails.guests}</p>
+                    </div>
+                    <div>
+                      <p className="text-gray-600">Total Amount</p>
+                      <p className="font-medium">${bookingDetails.total.toFixed(2)}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
               
               <div className="space-y-6">
                 <div>

@@ -1,8 +1,10 @@
+
 import React, { useEffect, useState } from "react";
 import { useSearchParams, Link, useNavigate } from "react-router-dom";
 import { format, differenceInDays } from "date-fns";
 import { hotelsData } from "@/data/hotels";
 import { Hotel } from "@/services/hotelService";
+import { bookHotel } from "@/services/mongoService";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -106,7 +108,7 @@ const Booking = () => {
   const taxesAndFees = totalPrice * 0.12; // 12% taxes and fees
   const grandTotal = totalPrice + taxesAndFees;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Form validation
@@ -118,22 +120,80 @@ const Booking = () => {
       });
       return;
     }
+
+    if (!hotel || !room || !checkIn || !checkOut) {
+      toast({
+        title: "Booking Error",
+        description: "Missing booking details. Please try again.",
+        variant: "destructive",
+      });
+      return;
+    }
     
     setIsSubmitting(true);
     
-    // In a real application, you would send this data to a backend API
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      // Generate a mock user ID for demo purposes
+      const mockUserId = "demo-user-" + Math.random().toString(36).substr(2, 9);
       
+      const guestInfo = {
+        firstName,
+        lastName,
+        email,
+        phone
+      };
+      
+      const paymentInfo = {
+        cardName,
+        cardNumber: cardNumber.slice(-4), // Store only last 4 digits
+        expiry,
+        cvv: "***" // Never store actual CVV
+      };
+      
+      const result = await bookHotel(
+        hotel.id,
+        mockUserId,
+        room.id,
+        checkIn,
+        checkOut,
+        guests,
+        guestInfo,
+        paymentInfo,
+        grandTotal
+      );
+      
+      if (result.success) {
+        toast({
+          title: "Booking Confirmed!",
+          description: "Your reservation has been successfully processed",
+        });
+        
+        // Store booking details in sessionStorage for confirmation page
+        sessionStorage.setItem('lastBooking', JSON.stringify({
+          bookingId: result.bookingId,
+          hotel: hotel.name,
+          room: room.name,
+          checkIn: checkIn.toISOString(),
+          checkOut: checkOut.toISOString(),
+          guests,
+          total: grandTotal
+        }));
+        
+        // Redirect to confirmation page
+        navigate("/booking-confirmation");
+      } else {
+        throw new Error("Booking failed");
+      }
+    } catch (error) {
+      console.error('Booking submission error:', error);
       toast({
-        title: "Booking Confirmed!",
-        description: "Your reservation has been successfully processed",
-        variant: "default",
+        title: "Booking Failed",
+        description: "There was an error processing your booking. Please try again.",
+        variant: "destructive",
       });
-      
-      // Redirect to a confirmation page
-      navigate("/booking-confirmation");
-    }, 1500);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (!hotel || !room) {

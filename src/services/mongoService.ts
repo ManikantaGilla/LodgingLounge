@@ -1,8 +1,6 @@
-// MongoDB integration through Supabase Edge Functions
-// In a real implementation, this would connect to MongoDB via Supabase Edge Functions
 
 import { toast } from "sonner";
-import mongoose from "mongoose";
+import { supabase } from "@/integrations/supabase/client";
 
 export interface HotelData {
   id: string;
@@ -15,64 +13,36 @@ export interface HotelData {
   images: string[];
 }
 
-// MongoDB connection details (would be stored as environment variables in production)
-const MONGODB_URI = "mongodb+srv://manikantagilla:mani4321@cluster3.rdza9wn.mongodb.net/?retryWrites=true&w=majority&appName=Cluster3";
-const MONGODB_DB = "hotelBooking";
-
-// This simulates the API call to Supabase Edge Function that would connect to MongoDB
-const callEdgeFunction = async (functionName: string, payload: any) => {
-  console.log(`Calling edge function: ${functionName} with payload:`, payload);
-  
-  // In a real implementation, this would call a Supabase Edge Function
-  // return await supabase.functions.invoke(functionName, { body: payload });
-  
-  // For now, we're simulating the response
-  await new Promise(resolve => setTimeout(resolve, 800)); // Simulate network delay
-  
-  // Return mock data based on the function name
-  switch (functionName) {
-    case "saveFavorite":
-      return { data: { success: true }, error: null };
-    case "removeFavorite":
-      return { data: { success: true }, error: null };
-    case "getFavorites":
-      return { data: { favorites: payload.hotelIds || [] }, error: null };
-    case "searchHotels":
-      return { data: { hotels: [] }, error: null };
-    case "bookHotel":
-      return { 
-        data: { 
-          success: true, 
-          bookingId: 'BOOK' + Math.floor(Math.random() * 1000000).toString() 
-        }, 
-        error: null 
-      };
-    case "subscribeNewsletter":
-      return { data: { success: true }, error: null };
-    default:
-      throw new Error(`Unknown function: ${functionName}`);
-  }
-};
-
-const connectToMongoDB = async () => {
-  try {
-    const uri = process.env.MONGO_URI || "your-default-uri";
-    await mongoose.connect(uri);
-    console.log("Connected to MongoDB Atlas");
-  } catch (error) {
-    console.error("Error connecting to MongoDB:", error);
-  }
-};
+export interface BookingData {
+  id?: string;
+  hotel_id: string;
+  user_id: string;
+  room_id: string;
+  check_in: string;
+  check_out: string;
+  guests: number;
+  guest_info: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+  };
+  payment_info: {
+    cardName: string;
+    cardNumber: string;
+    expiry: string;
+    cvv: string;
+  };
+  total_amount: number;
+  status: string;
+  created_at?: string;
+}
 
 export const saveToFavorites = async (userId: string, hotelId: string): Promise<boolean> => {
   try {
-    const { data, error } = await callEdgeFunction("saveFavorite", { userId, hotelId });
-    
-    if (error) {
-      throw error;
-    }
-    
-    return data.success;
+    // In a real implementation, you would save to a favorites table
+    console.log(`Saving hotel ${hotelId} to favorites for user ${userId}`);
+    return true;
   } catch (error) {
     console.error('Error saving to favorites:', error);
     toast('Failed to save to favorites. Please try again.');
@@ -82,13 +52,9 @@ export const saveToFavorites = async (userId: string, hotelId: string): Promise<
 
 export const removeFromFavorites = async (userId: string, hotelId: string): Promise<boolean> => {
   try {
-    const { data, error } = await callEdgeFunction("removeFavorite", { userId, hotelId });
-    
-    if (error) {
-      throw error;
-    }
-    
-    return data.success;
+    // In a real implementation, you would remove from a favorites table
+    console.log(`Removing hotel ${hotelId} from favorites for user ${userId}`);
+    return true;
   } catch (error) {
     console.error('Error removing from favorites:', error);
     toast('Failed to remove from favorites. Please try again.');
@@ -98,13 +64,9 @@ export const removeFromFavorites = async (userId: string, hotelId: string): Prom
 
 export const getFavorites = async (userId: string): Promise<string[]> => {
   try {
-    const { data, error } = await callEdgeFunction("getFavorites", { userId });
-    
-    if (error) {
-      throw error;
-    }
-    
-    return data.favorites;
+    // In a real implementation, you would fetch from a favorites table
+    console.log(`Getting favorites for user ${userId}`);
+    return [];
   } catch (error) {
     console.error('Error getting favorites:', error);
     toast('Failed to load favorites. Please try again.');
@@ -119,18 +81,25 @@ export const searchHotels = async (
   guests?: number
 ): Promise<HotelData[]> => {
   try {
-    const { data, error } = await callEdgeFunction("searchHotels", { 
-      location, 
-      checkIn: checkIn?.toISOString(), 
-      checkOut: checkOut?.toISOString(), 
-      guests 
-    });
-    
+    const { data: hotels, error } = await supabase
+      .from('hotels')
+      .select('*')
+      .ilike('location', `%${location}%`);
+
     if (error) {
       throw error;
     }
-    
-    return data.hotels;
+
+    return (hotels || []).map(hotel => ({
+      id: hotel.id,
+      name: hotel.name,
+      location: hotel.location,
+      description: hotel.description || '',
+      price: hotel.price,
+      rating: hotel.rating,
+      reviews: hotel.reviews,
+      images: hotel.images
+    }));
   } catch (error) {
     console.error('Error searching hotels:', error);
     toast('Failed to search hotels. Please try again.');
@@ -141,28 +110,47 @@ export const searchHotels = async (
 export const bookHotel = async (
   hotelId: string,
   userId: string,
+  roomId: string,
   checkIn: Date,
   checkOut: Date,
   guests: number,
-  guestInfo: any
+  guestInfo: any,
+  paymentInfo: any,
+  totalAmount: number
 ): Promise<{ success: boolean; bookingId?: string }> => {
   try {
-    const { data, error } = await callEdgeFunction("bookHotel", {
+    console.log('Booking hotel with data:', {
       hotelId,
       userId,
+      roomId,
       checkIn: checkIn.toISOString(),
       checkOut: checkOut.toISOString(),
       guests,
-      guestInfo
+      guestInfo,
+      totalAmount
     });
-    
+
+    const { data, error } = await supabase
+      .from('bookings')
+      .insert({
+        user_id: userId,
+        room_id: roomId,
+        check_in: checkIn.toISOString().split('T')[0],
+        check_out: checkOut.toISOString().split('T')[0],
+        status: 'confirmed'
+      })
+      .select()
+      .single();
+
     if (error) {
+      console.error('Supabase booking error:', error);
       throw error;
     }
-    
+
+    toast('Booking confirmed successfully!');
     return { 
-      success: data.success, 
-      bookingId: data.bookingId 
+      success: true, 
+      bookingId: data.id 
     };
   } catch (error) {
     console.error('Error booking hotel:', error);
@@ -173,13 +161,9 @@ export const bookHotel = async (
 
 export const subscribeToNewsletter = async (email: string): Promise<boolean> => {
   try {
-    const { data, error } = await callEdgeFunction("subscribeNewsletter", { email });
-    
-    if (error) {
-      throw error;
-    }
-    
-    return data.success;
+    console.log(`Subscribing email ${email} to newsletter`);
+    toast('Successfully subscribed to newsletter!');
+    return true;
   } catch (error) {
     console.error('Error subscribing to newsletter:', error);
     toast('Failed to subscribe. Please try again.');
@@ -187,4 +171,7 @@ export const subscribeToNewsletter = async (email: string): Promise<boolean> => 
   }
 };
 
-export default connectToMongoDB;
+export default async function connectToMongoDB() {
+  // This function is no longer needed since we're using Supabase
+  console.log("Using Supabase instead of MongoDB");
+}

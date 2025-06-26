@@ -1,17 +1,15 @@
+
 import React, { useEffect, useState } from "react";
 import { useSearchParams, Link, useNavigate } from "react-router-dom";
-import { format, differenceInDays } from "date-fns";
+import { differenceInDays } from "date-fns";
 import { hotelsData } from "@/data/hotels";
 import { Hotel } from "@/services/hotelService";
 import { bookHotel } from "@/services/mongoService";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
-import { Check, CreditCard } from "lucide-react";
+import BookingForm from "@/components/booking/BookingForm";
+import BookingSummary from "@/components/booking/BookingSummary";
 import { useToast } from "@/hooks/use-toast";
 
 interface RoomType {
@@ -242,201 +240,39 @@ const Booking = () => {
           <div className="flex flex-col lg:flex-row gap-6">
             {/* Booking Form */}
             <div className="flex-grow">
-              <Card>
-                <CardContent className="p-6">
-                  <form onSubmit={handleSubmit}>
-                    {/* Guest Information */}
-                    <div className="mb-8">
-                      <h2 className="text-xl font-semibold mb-4">Guest Information</h2>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="first-name">First Name*</Label>
-                          <Input 
-                            id="first-name" 
-                            value={firstName}
-                            onChange={(e) => setFirstName(e.target.value)}
-                            required
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="last-name">Last Name*</Label>
-                          <Input 
-                            id="last-name" 
-                            value={lastName}
-                            onChange={(e) => setLastName(e.target.value)}
-                            required
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="email">Email Address*</Label>
-                          <Input 
-                            id="email" 
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="phone">Phone Number*</Label>
-                          <Input 
-                            id="phone" 
-                            value={phone}
-                            onChange={(e) => setPhone(e.target.value)}
-                            required
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {/* Payment Information */}
-                    <div>
-                      <h2 className="text-xl font-semibold mb-4">Payment Information</h2>
-                      <div className="bg-gray-50 p-4 rounded-lg mb-4 flex items-center">
-                        <CreditCard className="h-5 w-5 mr-2 text-gray-500" />
-                        <span>Secure payment processing</span>
-                      </div>
-                      
-                      <div className="space-y-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="card-name">Name on Card*</Label>
-                          <Input 
-                            id="card-name" 
-                            value={cardName}
-                            onChange={(e) => setCardName(e.target.value)}
-                            required
-                          />
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <Label htmlFor="card-number">Card Number*</Label>
-                          <Input 
-                            id="card-number" 
-                            placeholder="XXXX XXXX XXXX XXXX"
-                            value={cardNumber}
-                            onChange={(e) => setCardNumber(e.target.value)}
-                            required
-                          />
-                        </div>
-                        
-                        <div className="grid grid-cols-2 gap-4">
-                          <div className="space-y-2">
-                            <Label htmlFor="expiry">Expiry Date*</Label>
-                            <Input 
-                              id="expiry" 
-                              placeholder="MM/YY"
-                              value={expiry}
-                              onChange={(e) => setExpiry(e.target.value)}
-                              required
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="cvv">CVV*</Label>
-                            <Input 
-                              id="cvv" 
-                              type="password" 
-                              placeholder="XXX"
-                              value={cvv}
-                              onChange={(e) => setCvv(e.target.value)}
-                              required
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="mt-8">
-                      <Button 
-                        type="submit" 
-                        className="w-full bg-accent hover:bg-accent/90"
-                        disabled={isSubmitting}
-                      >
-                        {isSubmitting ? "Processing..." : `Complete Booking - $${grandTotal.toFixed(2)}`}
-                      </Button>
-                      <p className="text-sm text-gray-500 mt-2 text-center">
-                        By clicking this button, you agree to our terms and conditions.
-                      </p>
-                    </div>
-                  </form>
-                </CardContent>
-              </Card>
+              <BookingForm
+                firstName={firstName}
+                setFirstName={setFirstName}
+                lastName={lastName}
+                setLastName={setLastName}
+                email={email}
+                setEmail={setEmail}
+                phone={phone}
+                setPhone={setPhone}
+                cardName={cardName}
+                setCardName={setCardName}
+                cardNumber={cardNumber}
+                setCardNumber={setCardNumber}
+                expiry={expiry}
+                setExpiry={setExpiry}
+                cvv={cvv}
+                setCvv={setCvv}
+                onSubmit={handleSubmit}
+                isSubmitting={isSubmitting}
+                grandTotal={grandTotal}
+              />
             </div>
             
             {/* Booking Summary */}
             <div className="lg:w-80 flex-shrink-0">
-              <Card>
-                <CardContent className="p-6">
-                  <h3 className="text-lg font-semibold mb-4">Booking Summary</h3>
-                  
-                  <div className="mb-4">
-                    <img 
-                      src={hotel.images[0]} 
-                      alt={hotel.name} 
-                      className="w-full h-40 object-cover rounded-lg mb-3"
-                    />
-                    <h4 className="font-medium">{hotel.name}</h4>
-                    <p className="text-gray-600 text-sm">{hotel.location}</p>
-                  </div>
-                  
-                  <Separator className="my-4" />
-                  
-                  <div className="space-y-3 text-sm">
-                    <div className="font-medium">Your Stay</div>
-                    <div className="flex justify-between">
-                      <span>Room Type:</span>
-                      <span>{room.name}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Check-in:</span>
-                      <span>{checkIn ? format(checkIn, "MMM d, yyyy") : "Not specified"}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Check-out:</span>
-                      <span>{checkOut ? format(checkOut, "MMM d, yyyy") : "Not specified"}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Guests:</span>
-                      <span>{guests}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Length of stay:</span>
-                      <span>{nights} {nights === 1 ? "night" : "nights"}</span>
-                    </div>
-                  </div>
-                  
-                  <Separator className="my-4" />
-                  
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span>Room Rate:</span>
-                      <span>${room.price} / night</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span>{nights} {nights === 1 ? "night" : "nights"}:</span>
-                      <span>${totalPrice.toFixed(2)}</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span>Taxes & Fees:</span>
-                      <span>${taxesAndFees.toFixed(2)}</span>
-                    </div>
-                    <Separator className="my-2" />
-                    <div className="flex justify-between font-semibold">
-                      <span>Total:</span>
-                      <span>${grandTotal.toFixed(2)}</span>
-                    </div>
-                  </div>
-                  
-                  <div className="mt-4 bg-gray-50 p-3 rounded-lg">
-                    <div className="flex">
-                      <Check className="h-5 w-5 text-green-500 flex-shrink-0 mr-2" />
-                      <div className="text-sm">
-                        <p className="font-medium">Free cancellation</p>
-                        <p className="text-gray-600">Until 48 hours before check-in</p>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+              <BookingSummary
+                hotel={hotel}
+                room={room}
+                checkIn={checkIn}
+                checkOut={checkOut}
+                guests={guests}
+                nights={nights}
+              />
             </div>
           </div>
         </div>

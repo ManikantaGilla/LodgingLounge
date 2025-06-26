@@ -1,6 +1,8 @@
 
 import { Hotel } from "@/services/hotelService";
 
+export { Hotel };
+
 export const hotelsData: Hotel[] = [
   // New York Hotels (7 total)
   {
@@ -1015,3 +1017,6 @@ export const hotelsData: Hotel[] = [
     }
   }
 ];
+
+// Export with the old name for backward compatibility
+export const HOTELS_DATA = hotelsData;

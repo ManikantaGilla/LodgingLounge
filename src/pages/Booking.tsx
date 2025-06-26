@@ -1,8 +1,8 @@
-
 import React, { useEffect, useState } from "react";
 import { useSearchParams, Link, useNavigate } from "react-router-dom";
 import { format, differenceInDays } from "date-fns";
-import { HOTELS_DATA, Hotel } from "@/data/hotels";
+import { hotelsData } from "@/data/hotels";
+import { Hotel } from "@/services/hotelService";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -59,17 +59,37 @@ const Booking = () => {
     if (guestsParam) setGuests(parseInt(guestsParam) || 1);
     
     // Find hotel and room
-    const foundHotel = HOTELS_DATA.find(h => h.id === hotelId);
+    const foundHotel = hotelsData.find(h => h.id === hotelId);
     
     if (foundHotel) {
       setHotel(foundHotel);
       
+      // Create mock room types since they're not in the static data
+      const mockRoomTypes = [
+        {
+          id: "deluxe",
+          name: "Deluxe Room",
+          description: "Comfortable deluxe room with city views",
+          price: foundHotel.price,
+          features: ["King Bed", "City View", "Air Conditioning", "Mini Bar", "Free WiFi"],
+          image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=1000&auto=format&fit=crop"
+        },
+        {
+          id: "suite",
+          name: "Premium Suite",
+          description: "Spacious suite with premium amenities",
+          price: foundHotel.price + 200,
+          features: ["King Bed", "Separate Living Area", "Premium View", "Luxury Amenities"],
+          image: "https://images.unsplash.com/photo-1591088398332-8a7791972843?q=80&w=1000&auto=format&fit=crop"
+        }
+      ];
+
       if (roomId) {
-        const foundRoom = foundHotel.roomTypes.find(r => r.id === roomId);
+        const foundRoom = mockRoomTypes.find(r => r.id === roomId);
         if (foundRoom) setRoom(foundRoom);
-      } else if (foundHotel.roomTypes.length > 0) {
-        // Default to first room if none specified
-        setRoom(foundHotel.roomTypes[0]);
+      } else {
+        // Default to first room
+        setRoom(mockRoomTypes[0]);
       }
     }
     

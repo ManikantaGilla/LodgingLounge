@@ -1,563 +1,1017 @@
 
-export interface Hotel {
-  id: string;
-  name: string;
-  description: string;
-  location: string;
-  rating: number;
-  reviews: number;
-  price: number;
-  images: string[];
-  amenities: string[];
-  roomTypes: {
-    id: string;
-    name: string;
-    description: string;
-    price: number;
-    features: string[];
-    image: string;
-  }[];
-  coordinates: {
-    lat: number;
-    lng: number;
-  };
-}
+import { Hotel } from "@/services/hotelService";
 
-export const HOTELS_DATA: Hotel[] = [
+export const hotelsData: Hotel[] = [
+  // New York Hotels (7 total)
   {
-    id: "hotel-1",
-    name: "The Grand Plaza Hotel",
-    description: "Experience luxury and comfort at The Grand Plaza Hotel, located in the heart of downtown New York. Our elegant rooms offer breathtaking city views and our amenities include a rooftop pool, spa, and 5-star restaurant. Perfect for business travelers and tourists alike.",
-    location: "Downtown, New York",
+    id: "1",
+    name: "Grand Plaza Hotel",
+    description: "Luxury hotel in the heart of Manhattan with stunning city views and world-class amenities.",
+    location: "Manhattan, New York",
     rating: 4.8,
     reviews: 1243,
     price: 299,
     images: [
       "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1000&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80&w=1000&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?q=80&w=1000&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1551918120-9739cb430c6d?q=80&w=1000&auto=format&fit=crop"
+      "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?q=80&w=1000&auto=format&fit=crop"
     ],
-    amenities: [
-      "Free WiFi",
-      "Rooftop Pool",
-      "Spa & Wellness Center",
-      "Fitness Center",
-      "Restaurant & Bar",
-      "24/7 Room Service",
-      "Business Center",
-      "Concierge Service",
-      "Valet Parking"
-    ],
-    roomTypes: [
-      {
-        id: "room-1",
-        name: "Deluxe King Room",
-        description: "Spacious room with king-sized bed and city view",
-        price: 299,
-        features: ["King Bed", "City View", "40m²", "Air Conditioning", "Minibar"],
-        image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=1000&auto=format&fit=crop"
-      },
-      {
-        id: "room-2",
-        name: "Executive Suite",
-        description: "Luxury suite with separate living area and panoramic views",
-        price: 499,
-        features: ["King Bed", "Separate Living Area", "Panoramic View", "65m²", "Jacuzzi"],
-        image: "https://images.unsplash.com/photo-1591088398332-8a7791972843?q=80&w=1000&auto=format&fit=crop"
-      },
-      {
-        id: "room-3",
-        name: "Double Queen Room",
-        description: "Comfortable room with two queen beds",
-        price: 349,
-        features: ["2 Queen Beds", "City View", "45m²", "Air Conditioning", "Work Desk"],
-        image: "https://images.unsplash.com/photo-1629079447777-1e605162dc8d?q=80&w=1000&auto=format&fit=crop"
-      }
-    ],
+    amenities: ['Free WiFi', 'Rooftop Pool', 'Spa & Wellness Center', 'Fitness Center', 'Restaurant & Bar', '24/7 Room Service'],
     coordinates: {
       lat: 40.7128,
       lng: -74.0060
     }
   },
   {
-    id: "hotel-2",
-    name: "Seaside Resort & Spa",
-    description: "Escape to our beachfront resort and enjoy the soothing sounds of the ocean from your private balcony. Our resort features multiple swimming pools, a world-class spa, and direct beach access. Perfect for a relaxing getaway.",
-    location: "Oceanfront, Miami",
-    rating: 4.7,
-    reviews: 865,
+    id: "ny-plaza",
+    name: "The Plaza New York",
+    description: "Iconic luxury hotel overlooking Central Park with world-class amenities and timeless elegance in the heart of Manhattan.",
+    location: "Manhattan, New York",
+    rating: 4.9,
+    reviews: 2156,
+    price: 599,
+    images: [
+      "https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1564501049412-61c2a3083791?q=80&w=1000&auto=format&fit=crop"
+    ],
+    amenities: ['Free WiFi', 'Central Park View', 'Luxury Spa', 'Fine Dining', '24/7 Concierge', 'Valet Parking', 'Business Center', 'Room Service'],
+    coordinates: {
+      lat: 40.7648,
+      lng: -73.9808
+    }
+  },
+  {
+    id: "ny-highline",
+    name: "The High Line Hotel",
+    description: "Boutique hotel in Chelsea with historic charm and modern amenities, walking distance to the High Line park.",
+    location: "Chelsea, New York",
+    rating: 4.6,
+    reviews: 892,
+    price: 349,
+    images: [
+      "https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?q=80&w=1000&auto=format&fit=crop"
+    ],
+    amenities: ['Free WiFi', 'Historic Architecture', 'Pet Friendly', 'Fitness Center', 'Restaurant', 'Meeting Rooms', 'Garden Terrace'],
+    coordinates: {
+      lat: 40.7451,
+      lng: -74.0072
+    }
+  },
+  {
+    id: "ny-brooklyn",
+    name: "Brooklyn Bridge Hotel",
+    description: "Charming hotel in historic Brooklyn Heights with stunning Manhattan skyline views.",
+    location: "Brooklyn Heights, New York",
+    rating: 4.4,
+    reviews: 654,
+    price: 279,
+    images: [
+      "https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1630660664869-c9d3cc676880?q=80&w=1000&auto=format&fit=crop"
+    ],
+    amenities: ['Free WiFi', 'Manhattan Skyline Views', 'Historic District', 'Restaurant', 'Business Center', 'Parking'],
+    coordinates: {
+      lat: 40.6962,
+      lng: -73.9969
+    }
+  },
+  {
+    id: "ny-pod",
+    name: "Pod Hotel Times Square",
+    description: "Modern budget-friendly hotel in the heart of Times Square with contemporary design.",
+    location: "Times Square, New York",
+    rating: 4.2,
+    reviews: 512,
+    price: 189,
+    images: [
+      "https://images.unsplash.com/photo-1566665797739-1674de7a421a?q=80&w=1000&auto=format&fit=crop"
+    ],
+    amenities: ['Free WiFi', 'Times Square Location', 'Modern Design', 'Rooftop Bar', '24/7 Front Desk'],
+    coordinates: {
+      lat: 40.7580,
+      lng: -73.9855
+    }
+  },
+  {
+    id: "ny-arlo",
+    name: "Arlo SoHo",
+    description: "Boutique hotel in trendy SoHo with industrial-chic design and artistic atmosphere.",
+    location: "SoHo, New York",
+    rating: 4.5,
+    reviews: 687,
     price: 389,
     images: [
+      "https://images.unsplash.com/photo-1598928636135-d146006ff4be?q=80&w=1000&auto=format&fit=crop"
+    ],
+    amenities: ['Free WiFi', 'Industrial Design', 'Art Gallery', 'Rooftop Terrace', 'Pet Friendly'],
+    coordinates: {
+      lat: 40.7230,
+      lng: -74.0030
+    }
+  },
+  {
+    id: "ny-washington",
+    name: "Washington Square Hotel",
+    description: "Historic boutique hotel in Greenwich Village near Washington Square Park.",
+    location: "Greenwich Village, New York",
+    rating: 4.3,
+    reviews: 456,
+    price: 259,
+    images: [
+      "https://images.unsplash.com/photo-1587874522487-fe10e9d4eac7?q=80&w=1000&auto=format&fit=crop"
+    ],
+    amenities: ['Free WiFi', 'Historic Building', 'Village Location', 'Restaurant', 'Business Center'],
+    coordinates: {
+      lat: 40.7315,
+      lng: -73.9990
+    }
+  },
+
+  // Miami Hotels (7 total)
+  {
+    id: "2",
+    name: "Ocean View Resort",
+    description: "Beachfront resort with stunning ocean views and tropical paradise atmosphere.",
+    location: "Miami Beach, Florida",
+    rating: 4.6,
+    reviews: 892,
+    price: 429,
+    images: [
+      "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&q=80&w=2070",
+      "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?auto=format&fit=crop&q=80&w=2070"
+    ],
+    amenities: ['Free WiFi', 'Ocean Views', 'Private Beach', 'Pool & Spa', 'Beachfront Dining', 'Water Sports'],
+    coordinates: {
+      lat: 25.7907,
+      lng: -80.1300
+    }
+  },
+  {
+    id: "miami-setai",
+    name: "The Setai Miami Beach",
+    description: "Ultra-luxury resort with three infinity pools and pristine beachfront location in South Beach.",
+    location: "South Beach, Miami",
+    rating: 4.8,
+    reviews: 1432,
+    price: 789,
+    images: [
       "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?q=80&w=1000&auto=format&fit=crop"
+    ],
+    amenities: ['Free WiFi', 'Three Infinity Pools', 'Direct Beach Access', 'Luxury Spa', 'Fine Dining', 'Butler Service', 'Valet Parking'],
+    coordinates: {
+      lat: 25.7743,
+      lng: -80.1337
+    }
+  },
+  {
+    id: "miami-1hotel",
+    name: "1 Hotel South Beach",
+    description: "Eco-luxury hotel with sustainable design and rooftop pool overlooking the Atlantic Ocean.",
+    location: "South Beach, Miami",
+    rating: 4.7,
+    reviews: 1156,
+    price: 549,
+    images: [
       "https://images.unsplash.com/photo-1584132967334-10e028bd69f7?q=80&w=1000&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?q=80&w=1000&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1540541338287-41700207dee6?q=80&w=1000&auto=format&fit=crop"
     ],
-    amenities: [
-      "Free WiFi",
-      "Beach Access",
-      "Multiple Swimming Pools",
-      "Spa & Wellness Center",
-      "Ocean-view Restaurant",
-      "Water Sports",
-      "Kids Club",
-      "Fitness Center",
-      "Poolside Bar"
-    ],
-    roomTypes: [
-      {
-        id: "room-1",
-        name: "Ocean View Room",
-        description: "Bright room with stunning ocean views and private balcony",
-        price: 389,
-        features: ["King Bed", "Ocean View", "Private Balcony", "35m²", "Air Conditioning"],
-        image: "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?q=80&w=1000&auto=format&fit=crop"
-      },
-      {
-        id: "room-2",
-        name: "Beach Villa",
-        description: "Private villa steps away from the beach",
-        price: 789,
-        features: ["King Bed", "Direct Beach Access", "Private Pool", "85m²", "Kitchenette"],
-        image: "https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?q=80&w=1000&auto=format&fit=crop"
-      }
-    ],
+    amenities: ['Free WiFi', 'Eco-Friendly', 'Rooftop Pool', 'Beach Access', 'Organic Restaurant', 'Spa Services', 'Fitness Center'],
     coordinates: {
-      lat: 25.7617,
+      lat: 25.7804,
+      lng: -80.1373
+    }
+  },
+  {
+    id: "miami-ritz",
+    name: "The Ritz-Carlton Key Biscayne",
+    description: "Tropical paradise resort on a private island with pristine beaches and world-class amenities.",
+    location: "Key Biscayne, Miami",
+    rating: 4.8,
+    reviews: 987,
+    price: 689,
+    images: [
+      "https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1596386461350-326ccb383e9f?q=80&w=1000&auto=format&fit=crop"
+    ],
+    amenities: ['Free WiFi', 'Private Beach', 'Multiple Pools', 'Golf Course', 'Spa & Wellness', 'Tennis Courts', 'Kids Club'],
+    coordinates: {
+      lat: 25.6942,
+      lng: -80.1558
+    }
+  },
+  {
+    id: "miami-standard",
+    name: "The Standard Miami",
+    description: "Hip waterfront hotel with vibrant nightlife and stunning Biscayne Bay views.",
+    location: "Downtown Miami",
+    rating: 4.5,
+    reviews: 743,
+    price: 329,
+    images: [
+      "https://images.unsplash.com/photo-1551918120-9739cb430c6d?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1000&auto=format&fit=crop"
+    ],
+    amenities: ['Free WiFi', 'Waterfront Location', 'Rooftop Bar', 'Spa Services', 'Pool & Jacuzzi', 'Marina Access', 'Restaurant'],
+    coordinates: {
+      lat: 25.7743,
+      lng: -80.1925
+    }
+  },
+  {
+    id: "miami-fourseasons",
+    name: "Four Seasons Hotel Miami",
+    description: "Luxury downtown hotel with panoramic bay and city views, featuring world-class dining and spa.",
+    location: "Brickell, Miami",
+    rating: 4.9,
+    reviews: 1289,
+    price: 699,
+    images: [
+      "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80&w=1000&auto=format&fit=crop"
+    ],
+    amenities: ['Free WiFi', 'Panoramic Views', 'Luxury Spa', 'Multiple Restaurants', 'Infinity Pool', 'Concierge Service', 'Valet Parking'],
+    coordinates: {
+      lat: 25.7657,
       lng: -80.1918
     }
   },
   {
-    id: "hotel-3",
-    name: "Urban Loft Hotel",
-    description: "Experience the vibrant energy of Los Angeles at our boutique hotel located in the artistic district. Our modern loft-style rooms feature industrial-chic design and all the comforts of home. Walk to trendy restaurants, galleries, and shops.",
-    location: "Arts District, Los Angeles",
-    rating: 4.5,
-    reviews: 607,
-    price: 249,
+    id: "miami-fontainebleau",
+    name: "Fontainebleau Miami Beach",
+    description: "Iconic luxury resort with multiple pools, world-class dining, and vibrant nightlife.",
+    location: "Mid-Beach, Miami",
+    rating: 4.6,
+    reviews: 2143,
+    price: 459,
     images: [
-      "https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?q=80&w=1000&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?q=80&w=1000&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1000&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1630660664869-c9d3cc676880?q=80&w=1000&auto=format&fit=crop"
+      "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=1000&auto=format&fit=crop"
     ],
-    amenities: [
-      "Free WiFi",
-      "Rooftop Bar",
-      "Artistic Lounge",
-      "Coffee Shop",
-      "Bicycle Rental",
-      "Pet Friendly",
-      "Co-working Space",
-      "Fitness Room",
-      "Artisanal Breakfast"
-    ],
-    roomTypes: [
-      {
-        id: "room-1",
-        name: "Studio Loft",
-        description: "Open-concept studio with modern industrial design",
-        price: 249,
-        features: ["Queen Bed", "City View", "30m²", "High Ceilings", "Smart TV"],
-        image: "https://images.unsplash.com/photo-1560448075-bb485b067938?q=80&w=1000&auto=format&fit=crop"
-      },
-      {
-        id: "room-2",
-        name: "Artist Suite",
-        description: "Spacious suite with separate living area and artistic elements",
-        price: 399,
-        features: ["King Bed", "Separate Living Area", "55m²", "Local Artwork", "Rain Shower"],
-        image: "https://images.unsplash.com/photo-1540518614846-7eded433c457?q=80&w=1000&auto=format&fit=crop"
-      }
-    ],
+    amenities: ['Free WiFi', 'Multiple Pools', 'Beach Access', 'Nightclub', 'Spa Services', 'Multiple Restaurants'],
     coordinates: {
-      lat: 34.0522,
-      lng: -118.2437
+      lat: 25.8098,
+      lng: -80.1214
+    }
+  },
+
+  // Los Angeles Hotels (7 total)
+  {
+    id: "la-beverly",
+    name: "The Beverly Hills Hotel",
+    description: "Legendary pink palace with classic Hollywood glamour and lush tropical gardens.",
+    location: "Beverly Hills, Los Angeles",
+    rating: 4.8,
+    reviews: 1876,
+    price: 899,
+    images: [
+      "https://images.unsplash.com/photo-1566737236500-c8ac43014a67?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1596386461350-326ccb383e9f?q=80&w=1000&auto=format&fit=crop"
+    ],
+    amenities: ['Free WiFi', 'Historic Glamour', 'Tropical Gardens', 'Celebrity Hotspot', 'Luxury Spa', 'Fine Dining', 'Pool Cabanas'],
+    coordinates: {
+      lat: 34.0901,
+      lng: -118.4065
     }
   },
   {
-    id: "hotel-4",
-    name: "Mountain View Lodge",
-    description: "Nestled in the heart of the mountains, our rustic-luxury lodge offers breathtaking views and outdoor adventures right at your doorstep. Enjoy hiking, skiing, and nature while retreating to comfort and warmth.",
-    location: "Mountain Range, Colorado",
+    id: "la-chateau",
+    name: "Chateau Marmont",
+    description: "Iconic bohemian luxury hotel with rock star history and exclusive atmosphere.",
+    location: "West Hollywood, Los Angeles",
+    rating: 4.7,
+    reviews: 1234,
+    price: 749,
+    images: [
+      "https://images.unsplash.com/photo-1590073242678-70ee3fc28e8e?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1564501049412-61c2a3083791?q=80&w=1000&auto=format&fit=crop"
+    ],
+    amenities: ['Free WiFi', 'Historic Castle', 'Celebrity Haven', 'Garden Pool', 'Restaurant', 'Bar', 'Privacy & Discretion'],
+    coordinates: {
+      lat: 34.0969,
+      lng: -118.3886
+    }
+  },
+  {
+    id: "la-standard",
+    name: "The Standard Downtown LA",
+    description: "Modern hotel with rooftop bar and stunning city views in the heart of downtown.",
+    location: "Downtown, Los Angeles",
+    rating: 4.4,
+    reviews: 892,
+    price: 289,
+    images: [
+      "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1629079447777-1e605162dc8d?q=80&w=1000&auto=format&fit=crop"
+    ],
+    amenities: ['Free WiFi', 'Rooftop Pool', 'City Views', 'Modern Design', 'Fitness Center', 'Restaurant & Bar', 'Business Center'],
+    coordinates: {
+      lat: 34.0479,
+      lng: -118.2584
+    }
+  },
+  {
+    id: "la-erwin",
+    name: "Hotel Erwin Venice Beach",
+    description: "Beachfront boutique hotel with colorful murals and vibrant Venice Beach atmosphere.",
+    location: "Venice Beach, Los Angeles",
+    rating: 4.3,
+    reviews: 656,
+    price: 249,
+    images: [
+      "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?q=80&w=1000&auto=format&fit=crop"
+    ],
+    amenities: ['Free WiFi', 'Beachfront Location', 'Rooftop Bar', 'Artistic Design', 'Beach Access', 'Restaurant', 'Pet Friendly'],
+    coordinates: {
+      lat: 33.9850,
+      lng: -118.4695
+    }
+  },
+  {
+    id: "la-line",
+    name: "The Line Hotel LA",
+    description: "Contemporary hotel in Koreatown with Korean-inspired design and rooftop pool.",
+    location: "Koreatown, Los Angeles",
+    rating: 4.6,
+    reviews: 745,
+    price: 319,
+    images: [
+      "https://images.unsplash.com/photo-1618773928121-c32242e63f39?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1587874522487-fe10e9d4eac7?q=80&w=1000&auto=format&fit=crop"
+    ],
+    amenities: ['Free WiFi', 'Korean-Inspired Design', 'Rooftop Pool', 'Multiple Restaurants', 'Nightclub', 'Spa Services', 'Fitness Center'],
+    coordinates: {
+      lat: 34.0586,
+      lng: -118.3086
+    }
+  },
+  {
+    id: "la-griffith",
+    name: "Griffith Observatory Hotel",
+    description: "Boutique hotel near Griffith Observatory with astronomical theme and city views.",
+    location: "Los Feliz, Los Angeles",
+    rating: 4.2,
+    reviews: 523,
+    price: 199,
+    images: [
+      "https://images.unsplash.com/photo-1566665797739-1674de7a421a?q=80&w=1000&auto=format&fit=crop"
+    ],
+    amenities: ['Free WiFi', 'Observatory Views', 'Astronomical Theme', 'Rooftop Deck', 'Fitness Center'],
+    coordinates: {
+      lat: 34.1184,
+      lng: -118.3004
+    }
+  },
+  {
+    id: "la-sunset",
+    name: "Sunset Tower Hotel",
+    description: "Art Deco landmark on the Sunset Strip with old Hollywood glamour and modern luxury.",
+    location: "West Hollywood, Los Angeles",
+    rating: 4.5,
+    reviews: 834,
+    price: 459,
+    images: [
+      "https://images.unsplash.com/photo-1598928636135-d146006ff4be?q=80&w=1000&auto=format&fit=crop"
+    ],
+    amenities: ['Free WiFi', 'Art Deco Design', 'Sunset Strip Location', 'Pool & Fitness', 'Fine Dining'],
+    coordinates: {
+      lat: 34.0898,
+      lng: -118.3851
+    }
+  },
+
+  // Colorado Hotels (7 total)
+  {
+    id: "3",
+    name: "Mountain Lodge",
+    description: "Cozy mountain retreat with stunning alpine views and world-class skiing nearby.",
+    location: "Aspen, Colorado",
+    rating: 4.7,
+    reviews: 567,
+    price: 389,
+    images: [
+      "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&q=80&w=2070",
+      "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&q=80&w=2070"
+    ],
+    amenities: ['Free WiFi', 'Mountain Views', 'Ski Access', 'Spa Services', 'Fine Dining', 'Fireplace Lounge'],
+    coordinates: {
+      lat: 39.1911,
+      lng: -106.8175
+    }
+  },
+  {
+    id: "co-broadmoor",
+    name: "The Broadmoor",
+    description: "Legendary luxury resort in Colorado Springs with golf courses, spa, and mountain adventures.",
+    location: "Colorado Springs, Colorado",
     rating: 4.9,
-    reviews: 423,
-    price: 329,
+    reviews: 2134,
+    price: 799,
     images: [
       "https://images.unsplash.com/photo-1601918774946-25832a4be0d6?q=80&w=1000&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1595576508898-0ad5c879a061?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1595576508898-0ad5c879a061?q=80&w=1000&auto=format&fit=crop"
+    ],
+    amenities: ['Free WiFi', 'Golf Courses', 'Luxury Spa', 'Fine Dining', 'Adventure Activities', 'Tennis Courts', 'Multiple Pools'],
+    coordinates: {
+      lat: 38.7946,
+      lng: -104.8653
+    }
+  },
+  {
+    id: "co-jerome",
+    name: "Hotel Jerome Aspen",
+    description: "Historic luxury hotel in the heart of Aspen with Victorian elegance and modern amenities.",
+    location: "Aspen, Colorado",
+    rating: 4.8,
+    reviews: 1456,
+    price: 899,
+    images: [
       "https://images.unsplash.com/photo-1597589022928-bb4002c099ec?q=80&w=1000&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1615880484746-a134be9a6ecf?q=80&w=1000&auto=format&fit=crop"
     ],
-    amenities: [
-      "Free WiFi",
-      "Fireplace Lounge",
-      "Hot Tub",
-      "Ski Storage",
-      "Mountain View Restaurant",
-      "Adventure Concierge",
-      "Spa Services",
-      "Complimentary Breakfast",
-      "Hiking Trails"
-    ],
-    roomTypes: [
-      {
-        id: "room-1",
-        name: "Mountain View Room",
-        description: "Cozy room with stunning mountain views",
-        price: 329,
-        features: ["Queen Bed", "Mountain View", "Fireplace", "25m²", "Heated Floors"],
-        image: "https://images.unsplash.com/photo-1586375300773-8384e3e4916f?q=80&w=1000&auto=format&fit=crop"
-      },
-      {
-        id: "room-2",
-        name: "Luxury Cabin",
-        description: "Stand-alone cabin with premium amenities and privacy",
-        price: 589,
-        features: ["King Bed", "Panoramic Views", "Private Deck", "75m²", "Full Kitchen"],
-        image: "https://images.unsplash.com/photo-1510798831971-661eb04b3739?q=80&w=1000&auto=format&fit=crop"
-      }
-    ],
+    amenities: ['Free WiFi', 'Historic Victorian', 'Ski Access', 'Luxury Spa', 'Fine Dining', 'Bar & Lounge', 'Concierge Service'],
     coordinates: {
-      lat: 39.5501,
-      lng: -105.7821
+      lat: 39.1911,
+      lng: -106.8175
     }
   },
   {
-    id: "hotel-5",
-    name: "The Landmark Hotel",
-    description: "Stay in our historic hotel that combines old-world charm with modern amenities. Located in the heart of Chicago, our establishment has hosted celebrities and dignitaries for over a century while continuously evolving to meet the needs of today's travelers.",
-    location: "Downtown, Chicago",
+    id: "co-sebastian",
+    name: "The Sebastian Vail",
+    description: "Sophisticated alpine resort with direct access to Vail Mountain and luxury amenities.",
+    location: "Vail, Colorado",
+    rating: 4.7,
+    reviews: 987,
+    price: 649,
+    images: [
+      "https://images.unsplash.com/photo-1510798831971-661eb04b3739?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1586375300773-8384e3e4916f?q=80&w=1000&auto=format&fit=crop"
+    ],
+    amenities: ['Free WiFi', 'Ski-in/Ski-out', 'Mountain Views', 'Spa & Wellness', 'Restaurant', 'Fitness Center', 'Pet Friendly'],
+    coordinates: {
+      lat: 39.6403,
+      lng: -106.3742
+    }
+  },
+  {
+    id: "co-cheyenne",
+    name: "Cheyenne Mountain Resort",
+    description: "Mountain resort with golf course, lake, and stunning views of Colorado Springs.",
+    location: "Colorado Springs, Colorado",
+    rating: 4.5,
+    reviews: 743,
+    price: 389,
+    images: [
+      "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1591088398332-8a7791972843?q=80&w=1000&auto=format&fit=crop"
+    ],
+    amenities: ['Free WiFi', 'Golf Course', 'Lake Activities', 'Mountain Views', 'Spa Services', 'Multiple Restaurants', 'Tennis Courts'],
+    coordinates: {
+      lat: 38.7334,
+      lng: -104.8214
+    }
+  },
+  {
+    id: "co-oxford",
+    name: "The Oxford Hotel Denver",
+    description: "Historic luxury boutique hotel in downtown Denver with Victorian elegance and modern comfort.",
+    location: "Downtown, Denver",
     rating: 4.6,
-    reviews: 1087,
-    price: 279,
+    reviews: 892,
+    price: 349,
+    images: [
+      "https://images.unsplash.com/photo-1629079447777-1e605162dc8d?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=1000&auto=format&fit=crop"
+    ],
+    amenities: ['Free WiFi', 'Historic Boutique', 'Spa & Wellness', 'Fine Dining', 'Business Center', 'Fitness Center', 'Valet Parking'],
+    coordinates: {
+      lat: 39.7525,
+      lng: -105.0008
+    }
+  },
+  {
+    id: "co-steamboat",
+    name: "Steamboat Grand Hotel",
+    description: "Ski-in/ski-out luxury hotel in Steamboat Springs with mountain views and hot springs access.",
+    location: "Steamboat Springs, Colorado",
+    rating: 4.4,
+    reviews: 634,
+    price: 459,
+    images: [
+      "https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?q=80&w=1000&auto=format&fit=crop"
+    ],
+    amenities: ['Free WiFi', 'Ski Access', 'Hot Springs', 'Mountain Views', 'Pool & Spa', 'Restaurant'],
+    coordinates: {
+      lat: 40.4850,
+      lng: -106.8319
+    }
+  },
+
+  // Chicago Hotels (7 total)
+  {
+    id: "chi-ritz",
+    name: "The Ritz-Carlton Chicago",
+    description: "Luxury hotel on the Magnificent Mile with stunning city and lake views.",
+    location: "Magnificent Mile, Chicago",
+    rating: 4.8,
+    reviews: 1567,
+    price: 689,
     images: [
       "https://images.unsplash.com/photo-1564501049412-61c2a3083791?q=80&w=1000&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1618773928121-c32242e63f39?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1618773928121-c32242e63f39?q=80&w=1000&auto=format&fit=crop"
+    ],
+    amenities: ['Free WiFi', 'Magnificent Mile', 'Lake Views', 'Luxury Spa', 'Fine Dining', '24/7 Fitness Center', 'Concierge Service'],
+    coordinates: {
+      lat: 41.8955,
+      lng: -87.6219
+    }
+  },
+  {
+    id: "chi-theatre",
+    name: "The Chicago Theatre Hotel",
+    description: "Historic hotel in the Loop with classic architecture and modern amenities.",
+    location: "The Loop, Chicago",
+    rating: 4.5,
+    reviews: 923,
+    price: 299,
+    images: [
       "https://images.unsplash.com/photo-1587874522487-fe10e9d4eac7?q=80&w=1000&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?q=80&w=1000&auto=format&fit=crop"
     ],
-    amenities: [
-      "Free WiFi",
-      "Historic Ballroom",
-      "Fine Dining Restaurant",
-      "Afternoon Tea Service",
-      "Concierge",
-      "Fitness Center",
-      "Business Center",
-      "Valet Parking",
-      "Luxury Toiletries"
-    ],
-    roomTypes: [
-      {
-        id: "room-1",
-        name: "Classic Room",
-        description: "Elegant room with traditional decor and modern comforts",
-        price: 279,
-        features: ["Queen Bed", "City View", "28m²", "Marble Bathroom", "Work Desk"],
-        image: "https://images.unsplash.com/photo-1566665797739-1674de7a421a?q=80&w=1000&auto=format&fit=crop"
-      },
-      {
-        id: "room-2",
-        name: "Heritage Suite",
-        description: "Luxurious suite with separate living area and historic touches",
-        price: 459,
-        features: ["King Bed", "Corner Location", "55m²", "Claw-foot Bathtub", "Living Room"],
-        image: "https://images.unsplash.com/photo-1598928636135-d146006ff4be?q=80&w=1000&auto=format&fit=crop"
-      }
-    ],
+    amenities: ['Free WiFi', 'Historic Theatre District', 'Business Center', 'Restaurant', 'Fitness Center', 'Meeting Rooms', 'Valet Parking'],
     coordinates: {
-      lat: 41.8781,
-      lng: -87.6298
+      lat: 41.8827,
+      lng: -87.6278
     }
   },
   {
-    id: "hotel-6",
-    name: "Desert Oasis Resort",
-    description: "Escape to our luxurious desert retreat where modern design meets natural beauty. Our resort offers spectacular views of the surrounding landscape, multiple pools, and a world-class spa focused on relaxation and rejuvenation.",
-    location: "Palm Springs, California",
+    id: "chi-gray",
+    name: "Kimpton Gray Hotel",
+    description: "Boutique hotel in the Financial District with contemporary design and rooftop bar.",
+    location: "Financial District, Chicago",
     rating: 4.7,
-    reviews: 532,
-    price: 359,
+    reviews: 786,
+    price: 379,
+    images: [
+      "https://images.unsplash.com/photo-1566665797739-1674de7a421a?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?q=80&w=1000&auto=format&fit=crop"
+    ],
+    amenities: ['Free WiFi', 'Rooftop Bar', 'Modern Design', 'Pet Friendly', 'Fitness Center', 'Restaurant', 'Business Center'],
+    coordinates: {
+      lat: 41.8796,
+      lng: -87.6272
+    }
+  },
+  {
+    id: "chi-blackstone",
+    name: "The Blackstone Hotel",
+    description: "Historic luxury hotel in the South Loop with classic elegance and modern amenities.",
+    location: "South Loop, Chicago",
+    rating: 4.6,
+    reviews: 654,
+    price: 329,
+    images: [
+      "https://images.unsplash.com/photo-1598928636135-d146006ff4be?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1000&auto=format&fit=crop"
+    ],
+    amenities: ['Free WiFi', 'Historic Landmark', 'Classic Ballroom', 'Fine Dining', 'Spa Services', 'Fitness Center', 'Business Center'],
+    coordinates: {
+      lat: 41.8676,
+      lng: -87.6251
+    }
+  },
+  {
+    id: "chi-zachary",
+    name: "Hotel Zachary",
+    description: "Modern hotel adjacent to Wrigley Field with sports-themed design and rooftop views.",
+    location: "Wrigleyville, Chicago",
+    rating: 4.4,
+    reviews: 567,
+    price: 289,
+    images: [
+      "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=1000&auto=format&fit=crop"
+    ],
+    amenities: ['Free WiFi', 'Wrigley Field Views', 'Sports Bar', 'Rooftop Terrace', 'Fitness Center', 'Restaurant', 'Meeting Rooms'],
+    coordinates: {
+      lat: 41.9484,
+      lng: -87.6553
+    }
+  },
+  {
+    id: "chi-palmer",
+    name: "The Palmer House Hilton",
+    description: "Historic landmark hotel in the Loop with grand architecture and classic luxury.",
+    location: "The Loop, Chicago",
+    rating: 4.3,
+    reviews: 1245,
+    price: 249,
+    images: [
+      "https://images.unsplash.com/photo-1564501049412-61c2a3083791?q=80&w=1000&auto=format&fit=crop"
+    ],
+    amenities: ['Free WiFi', 'Historic Landmark', 'Grand Ballroom', 'Multiple Restaurants', 'Fitness Center'],
+    coordinates: {
+      lat: 41.8799,
+      lng: -87.6270
+    }
+  },
+  {
+    id: "chi-peninsula",
+    name: "The Peninsula Chicago",
+    description: "Luxury hotel on the Magnificent Mile with elegant Asian-inspired service and amenities.",
+    location: "Magnificent Mile, Chicago",
+    rating: 4.7,
+    reviews: 987,
+    price: 599,
+    images: [
+      "https://images.unsplash.com/photo-1598928636135-d146006ff4be?q=80&w=1000&auto=format&fit=crop"
+    ],
+    amenities: ['Free WiFi', 'Asian-Inspired Service', 'Luxury Spa', 'Rooftop Terrace', 'Fine Dining'],
+    coordinates: {
+      lat: 41.8957,
+      lng: -87.6244
+    }
+  },
+
+  // Palm Springs Hotels (7 total)
+  {
+    id: "ps-twopalms",
+    name: "Two Bunch Palms Resort & Spa",
+    description: "Historic desert spa resort with natural hot springs and wellness focus.",
+    location: "Desert Hot Springs, California",
+    rating: 4.7,
+    reviews: 1234,
+    price: 449,
     images: [
       "https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=1000&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1540541338287-41700207dee6?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1540541338287-41700207dee6?q=80&w=1000&auto=format&fit=crop"
+    ],
+    amenities: ['Free WiFi', 'Natural Hot Springs', 'Spa & Wellness', 'Desert Views', 'Grotto Pool', 'Restaurant', 'Yoga Classes'],
+    coordinates: {
+      lat: 33.9614,
+      lng: -116.5011
+    }
+  },
+  {
+    id: "ps-parker",
+    name: "The Parker Palm Springs",
+    description: "Whimsical luxury resort with colorful design by Jonathan Adler and multiple pools.",
+    location: "Palm Springs, California",
+    rating: 4.8,
+    reviews: 1456,
+    price: 699,
+    images: [
       "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1000&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?q=80&w=1000&auto=format&fit=crop"
     ],
-    amenities: [
-      "Free WiFi",
-      "3 Swimming Pools",
-      "Desert Spa",
-      "Yoga Classes",
-      "Farm-to-table Restaurant",
-      "Pool Bar",
-      "Tennis Courts",
-      "Star Gazing Deck",
-      "Desert Excursions"
-    ],
-    roomTypes: [
-      {
-        id: "room-1",
-        name: "Desert View Room",
-        description: "Modern room with views of the desert landscape",
-        price: 359,
-        features: ["King Bed", "Desert View", "Private Patio", "32m²", "Outdoor Shower"],
-        image: "https://images.unsplash.com/photo-1559599189-fe84dea4eb79?q=80&w=1000&auto=format&fit=crop"
-      },
-      {
-        id: "room-2",
-        name: "Pool Bungalow",
-        description: "Private bungalow with direct pool access",
-        price: 599,
-        features: ["King Bed", "Pool Access", "Hammock", "50m²", "Outdoor Bathtub"],
-        image: "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?q=80&w=1000&auto=format&fit=crop"
-      }
-    ],
+    amenities: ['Free WiFi', 'Designer Decor', 'Multiple Pools', 'Spa Services', 'Tennis Courts', 'Fine Dining', 'Pet Friendly'],
     coordinates: {
-      lat: 33.8303,
+      lat: 33.8214,
+      lng: -116.5420
+    }
+  },
+  {
+    id: "ps-laquinta",
+    name: "La Quinta Resort & Club",
+    description: "Spanish-style resort with golf courses, spa, and mountain views in the Coachella Valley.",
+    location: "La Quinta, California",
+    rating: 4.6,
+    reviews: 987,
+    price: 529,
+    images: [
+      "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1559599189-fe84dea4eb79?q=80&w=1000&auto=format&fit=crop"
+    ],
+    amenities: ['Free WiFi', 'Golf Courses', 'Spanish Architecture', 'Mountain Views', 'Spa Services', 'Tennis Courts', 'Multiple Pools'],
+    coordinates: {
+      lat: 33.6634,
+      lng: -116.3100
+    }
+  },
+  {
+    id: "ps-azure",
+    name: "Azure Palm Hot Springs Resort",
+    description: "Adults-only clothing-optional resort with hot springs and desert tranquility.",
+    location: "Desert Hot Springs, California",
+    rating: 4.5,
+    reviews: 432,
+    price: 389,
+    images: [
+      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1596386461350-326ccb383e9f?q=80&w=1000&auto=format&fit=crop"
+    ],
+    amenities: ['Free WiFi', 'Adults Only', 'Natural Hot Springs', 'Clothing Optional', 'Spa Services', 'Desert Views', 'Wellness Programs'],
+    coordinates: {
+      lat: 33.9586,
+      lng: -116.5008
+    }
+  },
+  {
+    id: "ps-miramonte",
+    name: "Miramonte Indian Wells Resort & Spa",
+    description: "Mediterranean-style resort with championship golf and luxury spa in Indian Wells.",
+    location: "Indian Wells, California",
+    rating: 4.7,
+    reviews: 876,
+    price: 579,
+    images: [
+      "https://images.unsplash.com/photo-1540518614846-7eded433c457?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1560448075-bb485b067938?q=80&w=1000&auto=format&fit=crop"
+    ],
+    amenities: ['Free WiFi', 'Championship Golf', 'Mediterranean Style', 'Luxury Spa', 'Multiple Restaurants', 'Tennis Courts', 'Fitness Center'],
+    coordinates: {
+      lat: 33.7175,
+      lng: -116.3414
+    }
+  },
+  {
+    id: "ps-ace",
+    name: "Ace Hotel & Swim Club",
+    description: "Hip desert hotel with vintage Americana design and legendary pool parties.",
+    location: "Palm Springs, California",
+    rating: 4.4,
+    reviews: 892,
+    price: 329,
+    images: [
+      "https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?q=80&w=1000&auto=format&fit=crop"
+    ],
+    amenities: ['Free WiFi', 'Vintage Design', 'Pool Parties', 'Live Music', 'Restaurant', 'Pet Friendly'],
+    coordinates: {
+      lat: 33.8203,
       lng: -116.5453
     }
   },
   {
-    id: "hotel-7",
-    name: "The Metropolitan",
-    description: "Experience modern luxury in the heart of the city. Our sleek, contemporary hotel offers spacious rooms with floor-to-ceiling windows, a rooftop infinity pool with panoramic views, and multiple dining options to satisfy every palate.",
-    location: "Midtown, New York",
-    rating: 4.6,
-    reviews: 1358,
-    price: 319,
+    id: "ps-saguaro",
+    name: "The Saguaro Palm Springs",
+    description: "Colorful boutique hotel with vibrant rainbow design and poolside fun.",
+    location: "Palm Springs, California",
+    rating: 4.2,
+    reviews: 634,
+    price: 279,
     images: [
-      "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=1000&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1629079447777-1e605162dc8d?q=80&w=1000&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=1000&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?q=80&w=1000&auto=format&fit=crop"
+      "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=1000&auto=format&fit=crop"
     ],
-    amenities: [
-      "Free WiFi",
-      "Rooftop Infinity Pool",
-      "24/7 Fitness Center",
-      "Multiple Restaurants",
-      "Sky Lounge",
-      "Spa Services",
-      "Meeting Spaces",
-      "Concierge",
-      "Express Check-in/out"
-    ],
-    roomTypes: [
-      {
-        id: "room-1",
-        name: "City View Room",
-        description: "Modern room with stunning city views through floor-to-ceiling windows",
-        price: 319,
-        features: ["King Bed", "City View", "Floor-to-ceiling Windows", "38m²", "Smart Home Controls"],
-        image: "https://images.unsplash.com/photo-1566665797739-1674de7a421a?q=80&w=1000&auto=format&fit=crop"
-      },
-      {
-        id: "room-2",
-        name: "Sky Suite",
-        description: "High-floor suite with panoramic views and luxury amenities",
-        price: 589,
-        features: ["King Bed", "Panoramic Views", "Separate Living Area", "65m²", "Free Minibar"],
-        image: "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?q=80&w=1000&auto=format&fit=crop"
-      }
-    ],
+    amenities: ['Free WiFi', 'Colorful Design', 'Pool Complex', 'Spa Services', 'Restaurant', 'Fitness Center'],
     coordinates: {
-      lat: 40.7549,
-      lng: -73.9840
+      lat: 33.8303,
+      lng: -116.5419
+    }
+  },
+
+  // San Francisco Hotels (7 total)
+  {
+    id: "4",
+    name: "Golden Gate Inn",
+    description: "Boutique hotel near Golden Gate Park with modern amenities and city charm.",
+    location: "San Francisco, California",
+    rating: 4.4,
+    reviews: 723,
+    price: 349,
+    images: [
+      "https://images.unsplash.com/photo-1445019980597-93fa8acb246c?auto=format&fit=crop&q=80&w=2070"
+    ],
+    amenities: ['Free WiFi', 'Golden Gate Views', 'Modern Design', 'Fitness Center', 'Business Center', 'Pet Friendly'],
+    coordinates: {
+      lat: 37.7749,
+      lng: -122.4194
     }
   },
   {
-    id: "hotel-8",
-    name: "Harbor View Hotel",
-    description: "Enjoy the perfect waterfront getaway at our elegant hotel overlooking the harbor. Watch boats come and go from your private balcony, dine on fresh seafood at our waterfront restaurant, and explore the charming coastal town just steps from our door.",
-    location: "Harbor District, San Francisco",
-    rating: 4.5,
-    reviews: 892,
-    price: 289,
+    id: "sf-fairmont",
+    name: "Fairmont San Francisco",
+    description: "Iconic luxury hotel atop Nob Hill with stunning city views and historic grandeur.",
+    location: "Nob Hill, San Francisco",
+    rating: 4.8,
+    reviews: 1789,
+    price: 649,
     images: [
       "https://images.unsplash.com/photo-1445019980597-93fa8acb246c?q=80&w=1000&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1533759413974-9e15f3b745ac?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1533759413974-9e15f3b745ac?q=80&w=1000&auto=format&fit=crop"
+    ],
+    amenities: ['Free WiFi', 'Historic Landmark', 'City Views', 'Luxury Spa', 'Fine Dining', 'Business Center', 'Valet Parking'],
+    coordinates: {
+      lat: 37.7923,
+      lng: -122.4103
+    }
+  },
+  {
+    id: "sf-stregis",
+    name: "The St. Regis San Francisco",
+    description: "Ultra-luxury hotel in SOMA with contemporary design and world-class amenities.",
+    location: "SOMA, San Francisco",
+    rating: 4.9,
+    reviews: 1234,
+    price: 799,
+    images: [
       "https://images.unsplash.com/photo-1595576508898-0ad5c879a061?q=80&w=1000&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?q=80&w=1000&auto=format&fit=crop"
     ],
-    amenities: [
-      "Free WiFi",
-      "Harbor-view Restaurant",
-      "Waterfront Terrace",
-      "Fitness Center",
-      "Bicycle Rental",
-      "Sailing Excursions",
-      "Spa Services",
-      "Meeting Rooms",
-      "Valet Parking"
-    ],
-    roomTypes: [
-      {
-        id: "room-1",
-        name: "Harbor View Room",
-        description: "Comfortable room with views of the bustling harbor",
-        price: 289,
-        features: ["Queen Bed", "Harbor View", "Private Balcony", "30m²", "Binoculars Provided"],
-        image: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?q=80&w=1000&auto=format&fit=crop"
-      },
-      {
-        id: "room-2",
-        name: "Captain's Suite",
-        description: "Premium corner suite with panoramic water views",
-        price: 489,
-        features: ["King Bed", "Panoramic Views", "Telescope", "60m²", "Wet Bar"],
-        image: "https://images.unsplash.com/photo-1560448075-bb485b067938?q=80&w=1000&auto=format&fit=crop"
-      }
-    ],
+    amenities: ['Free WiFi', 'Butler Service', 'Modern Luxury', 'Spa Services', 'Fine Dining', 'Business Center', 'Valet Parking'],
     coordinates: {
-      lat: 37.8199,
-      lng: -122.4783
+      lat: 37.7857,
+      lng: -122.4011
     }
   },
   {
-    id: "hotel-9",
-    name: "The Taj Palace",
-    description: "Experience the epitome of Indian luxury at The Taj Palace. Located in the heart of New Delhi, this iconic hotel combines traditional Indian hospitality with modern amenities. Featuring stunning architecture, world-class restaurants, and spectacular views of the city.",
-    location: "New Delhi, India",
-    rating: 4.9,
-    reviews: 1876,
-    price: 399,
+    id: "sf-zephyr",
+    name: "Hotel Zephyr",
+    description: "Nautical-themed boutique hotel at Fishermans Wharf with unique maritime design.",
+    location: "Fishermans Wharf, San Francisco",
+    rating: 4.4,
+    reviews: 892,
+    price: 329,
     images: [
       "https://images.unsplash.com/photo-1566737236500-c8ac43014a67?q=80&w=1000&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1596386461350-326ccb383e9f?q=80&w=1000&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1590073242678-70ee3fc28e8e?q=80&w=1000&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1564501049412-61c2a3083791?q=80&w=1000&auto=format&fit=crop"
     ],
-    amenities: [
-      "Free WiFi",
-      "Multiple Restaurants",
-      "Luxury Spa",
-      "Outdoor Pool",
-      "Butler Service",
-      "Business Center",
-      "Concierge",
-      "Valet Parking",
-      "Traditional Indian Wellness Center"
-    ],
-    roomTypes: [
-      {
-        id: "room-1",
-        name: "Luxury Room",
-        description: "Elegant room with city views and traditional Indian decor",
-        price: 399,
-        features: ["King Bed", "City View", "42m²", "Mini Bar", "Work Desk"],
-        image: "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?q=80&w=1000&auto=format&fit=crop"
-      },
-      {
-        id: "room-2",
-        name: "Palace Suite",
-        description: "Opulent suite with separate living area and butler service",
-        price: 899,
-        features: ["King Bed", "Panoramic Views", "Living Room", "85m²", "Private Butler"],
-        image: "https://images.unsplash.com/photo-1591088398332-8a7791972843?q=80&w=1000&auto=format&fit=crop"
-      }
-    ],
+    amenities: ['Free WiFi', 'Nautical Theme', 'Waterfront Location', 'Pet Friendly', 'Fitness Center', 'Restaurant', 'Game Room'],
     coordinates: {
-      lat: 28.6139,
-      lng: 77.2090
+      lat: 37.8087,
+      lng: -122.4156
     }
   },
   {
-    id: "hotel-10",
-    name: "Oberoi Udaivilas",
-    description: "Set on the banks of Lake Pichola, this luxury resort offers stunning views of the City Palace and Lake Palace. Experience royal Rajasthani hospitality with modern comforts in this palatial property.",
-    location: "Udaipur, India",
+    id: "sf-ritz",
+    name: "The Ritz-Carlton San Francisco",
+    description: "Luxury hotel on Nob Hill with classic elegance and panoramic city views.",
+    location: "Nob Hill, San Francisco",
     rating: 4.8,
-    reviews: 1245,
-    price: 599,
+    reviews: 1456,
+    price: 729,
+    images: [
+      "https://images.unsplash.com/photo-1618773928121-c32242e63f39?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1587874522487-fe10e9d4eac7?q=80&w=1000&auto=format&fit=crop"
+    ],
+    amenities: ['Free WiFi', 'Nob Hill Location', 'City Views', 'Luxury Spa', 'Club Level', 'Fine Dining', 'Concierge Service'],
+    coordinates: {
+      lat: 37.7919,
+      lng: -122.4094
+    }
+  },
+  {
+    id: "sf-nikko",
+    name: "Hotel Nikko San Francisco",
+    description: "Modern Japanese-inspired hotel in Union Square with zen aesthetics and city convenience.",
+    location: "Union Square, San Francisco",
+    rating: 4.6,
+    reviews: 967,
+    price: 389,
+    images: [
+      "https://images.unsplash.com/photo-1598928636135-d146006ff4be?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1566665797739-1674de7a421a?q=80&w=1000&auto=format&fit=crop"
+    ],
+    amenities: ['Free WiFi', 'Japanese Design', 'Indoor Pool', 'Fitness Center', 'Restaurant', 'Business Center', 'Pet Friendly'],
+    coordinates: {
+      lat: 37.7863,
+      lng: -122.4078
+    }
+  },
+  {
+    id: "sf-phoenix",
+    name: "The Phoenix Hotel",
+    description: "Rock and roll boutique hotel with poolside bar and music history.",
+    location: "Tenderloin, San Francisco",
+    rating: 4.3,
+    reviews: 543,
+    price: 249,
+    images: [
+      "https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?q=80&w=1000&auto=format&fit=crop"
+    ],
+    amenities: ['Free WiFi', 'Rock & Roll History', 'Poolside Bar', 'Music Venue', 'Pet Friendly', 'Restaurant', 'Unique Decor'],
+    coordinates: {
+      lat: 37.7834,
+      lng: -122.4195
+    }
+  },
+
+  // India Hotels (7 new hotels)
+  {
+    id: "india-oberoi-delhi",
+    name: "The Oberoi New Delhi",
+    description: "Luxury hotel in the diplomatic enclave with contemporary Indian design and world-class amenities.",
+    location: "New Delhi, India",
+    rating: 4.8,
+    reviews: 1654,
+    price: 450,
+    images: [
+      "https://images.unsplash.com/photo-1566737236500-c8ac43014a67?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1596386461350-326ccb383e9f?q=80&w=1000&auto=format&fit=crop"
+    ],
+    amenities: ['Free WiFi', 'Contemporary Indian Design', 'Luxury Spa', 'Multiple Restaurants', 'Business Center', 'Fitness Center', 'Concierge Service'],
+    coordinates: {
+      lat: 28.5935,
+      lng: 77.2334
+    }
+  },
+  {
+    id: "india-leela-mumbai",
+    name: "The Leela Palace Mumbai",
+    description: "Opulent palace hotel overlooking the Arabian Sea with royal Indian hospitality and modern luxury.",
+    location: "Mumbai, India",
+    rating: 4.9,
+    reviews: 2134,
+    price: 520,
     images: [
       "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1000&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=1000&auto=format&fit=crop"
+    ],
+    amenities: ['Free WiFi', 'Arabian Sea Views', 'Royal Indian Design', 'Luxury Spa', 'Multiple Restaurants', 'Butler Service', 'Business Center'],
+    coordinates: {
+      lat: 19.0330,
+      lng: 72.8619
+    }
+  },
+  {
+    id: "india-itc-chennai",
+    name: "ITC Grand Chola Chennai",
+    description: "Magnificent hotel inspired by Chola architecture with luxury amenities and traditional South Indian hospitality.",
+    location: "Chennai, India",
+    rating: 4.7,
+    reviews: 1432,
+    price: 380,
+    images: [
       "https://images.unsplash.com/photo-1584132967334-10e028bd69f7?q=80&w=1000&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?q=80&w=1000&auto=format&fit=crop"
     ],
-    amenities: [
-      "Free WiFi",
-      "Lakeside Pool",
-      "Ayurvedic Spa",
-      "Private Lake Access",
-      "Heritage Walks",
-      "Yoga Classes",
-      "Multiple Restaurants",
-      "Cultural Activities",
-      "Private Boat Tours"
-    ],
-    roomTypes: [
-      {
-        id: "room-1",
-        name: "Premier Lake View Room",
-        description: "Elegant room with stunning lake and palace views",
-        price: 599,
-        features: ["King Bed", "Lake View", "Private Terrace", "55m²", "Semi-private Pool"],
-        image: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?q=80&w=1000&auto=format&fit=crop"
-      },
-      {
-        id: "room-2",
-        name: "Kohinoor Suite",
-        description: "Palatial suite with private pool and lake views",
-        price: 1299,
-        features: ["King Bed", "Private Pool", "Butler Service", "100m²", "Private Dining"],
-        image: "https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=1000&auto=format&fit=crop"
-      }
-    ],
+    amenities: ['Free WiFi', 'Chola Architecture', 'Multiple Pools', 'Spa & Wellness', 'Traditional Restaurants', 'Business Center', 'Cultural Activities'],
     coordinates: {
-      lat: 24.5854,
-      lng: 73.6835
+      lat: 12.9886,
+      lng: 80.2150
     }
   },
   {
-    id: "hotel-11",
-    name: "The Leela Palace",
-    description: "Located in the bustling heart of Bengaluru's business district, The Leela Palace combines traditional grandeur with contemporary luxury. Experience world-class dining, wellness, and hospitality.",
+    id: "india-oberoi-bengaluru",
+    name: "The Oberoi Bengaluru",
+    description: "Contemporary luxury hotel in the Garden City with modern amenities and exceptional service.",
     location: "Bengaluru, India",
-    rating: 4.7,
-    reviews: 1532,
-    price: 349,
+    rating: 4.8,
+    reviews: 1156,
+    price: 420,
     images: [
       "https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?q=80&w=1000&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=1000&auto=format&fit=crop"
+    ],
+    amenities: ['Free WiFi', 'Garden City Views', 'Contemporary Design', 'Spa Services', 'Fine Dining', 'Business Center', 'Fitness Center'],
+    coordinates: {
+      lat: 12.9698,
+      lng: 77.6124
+    }
+  },
+  {
+    id: "india-hyatt-kolkata",
+    name: "Hyatt Regency Kolkata",
+    description: "Elegant hotel in the cultural capital with Bengali heritage and modern luxury amenities.",
+    location: "Kolkata, India",
+    rating: 4.6,
+    reviews: 987,
+    price: 340,
+    images: [
       "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?q=80&w=1000&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1559599189-fe84dea4eb79?q=80&w=1000&auto=format&fit=crop"
     ],
-    amenities: [
-      "Free WiFi",
-      "Rooftop Pool",
-      "Spa & Wellness",
-      "Multiple Restaurants",
-      "Business Center",
-      "Art Gallery",
-      "24/7 Fitness Center",
-      "Concierge",
-      "Library Lounge"
-    ],
-    roomTypes: [
-      {
-        id: "room-1",
-        name: "Royal Club Room",
-        description: "Modern luxury room with city views and club access",
-        price: 349,
-        features: ["King Bed", "Club Lounge Access", "40m²", "City View", "Work Station"],
-        image: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?q=80&w=1000&auto=format&fit=crop"
-      },
-      {
-        id: "room-2",
-        name: "Luxury Suite",
-        description: "Spacious luxury suite with premium amenities and panoramic city views",
-        price: 629,
-        features: ["King Bed", "Panoramic City Views", "Separate Living Area", "70m²", "Premium Amenities"],
-        image: "https://images.unsplash.com/photo-1591088398332-8a7791972843?q=80&w=1000&auto=format&fit=crop"
-      }
-    ],
+    amenities: ['Free WiFi', 'Bengali Heritage', 'Cultural Proximity', 'Spa Services', 'Multiple Restaurants', 'Business Center', 'Fitness Center'],
     coordinates: {
-      lat: 12.9716,
-      lng: 77.5946
+      lat: 22.5448,
+      lng: 88.3426
+    }
+  },
+  {
+    id: "india-jw-jaipur",
+    name: "JW Marriott Jaipur Resort & Spa",
+    description: "Royal Rajasthani palace resort with traditional architecture and luxury amenities in the Pink City.",
+    location: "Jaipur, India",
+    rating: 4.9,
+    reviews: 1567,
+    price: 480,
+    images: [
+      "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1591088398332-8a7791972843?q=80&w=1000&auto=format&fit=crop"
+    ],
+    amenities: ['Free WiFi', 'Royal Rajasthani Architecture', 'Luxury Spa', 'Multiple Pools', 'Traditional Restaurants', 'Cultural Activities', 'Business Center'],
+    coordinates: {
+      lat: 26.8492,
+      lng: 75.8056
+    }
+  },
+  {
+    id: "india-vivanta-goa",
+    name: "Vivanta Goa Panaji",
+    description: "Boutique hotel in the heart of Goa with Portuguese colonial charm and modern amenities.",
+    location: "Panaji, Goa, India",
+    rating: 4.5,
+    reviews: 743,
+    price: 290,
+    images: [
+      "https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1540541338287-41700207dee6?q=80&w=1000&auto=format&fit=crop"
+    ],
+    amenities: ['Free WiFi', 'Portuguese Colonial', 'River Views', 'Rooftop Pool', 'Goan Cuisine', 'Spa Services', 'Cultural Tours'],
+    coordinates: {
+      lat: 15.4989,
+      lng: 73.8278
     }
   }
 ];
